@@ -24,8 +24,6 @@ def get_task_info(task_id):
     return task info for the given task_id
     """
     task_result = AsyncResult(task_id)
-    import pdb; pdb.set_trace()
-    print('task_result_print ->', task_result)
     result = {
         "task_id": task_id,
         "task_status": task_result.status,
