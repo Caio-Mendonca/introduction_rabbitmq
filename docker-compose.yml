@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  rabitmq:
+    image: rabbitmq:3.8.9-management
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq
+      - ./rabbitmq/log:/var/log/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+
+  app_container:
+    build:
+      context: ./
+    restart: unless-stopped
+    container_name: app_container
+    ports:
+      - 8000:8000
+  
+  celery-worker:
+    build: .
+    container_name: celery-worker
+    command: celery -A main.celery worker --loglevel=info -Q universities,university
+    depends_on:
+      - app_container
+
+  
